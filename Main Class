@@ -1,0 +1,166 @@
+Alien aliens[];
+ArrayList<Bullet> bullets = new ArrayList<Bullet>();
+ArrayList<Shield> shields = new ArrayList<Shield>();
+Player player;
+PImage Alien1;
+PImage Explode;
+PImage Alien2;
+int index;
+int count = 0 ;
+boolean gameOver = false;
+float speedMultiplier = 1.0;
+ArrayList<PowerUp> powerUps;
+PImage tripleShotImg, rapidFireImg, largeBulletImg;
+void setup()
+{
+ size (1000, 1000);
+ Alien1 = loadImage("invader.GIF");
+ Alien1.resize(40,40);
+ Explode = loadImage("exploding.GIF");
+ Explode.resize(40,40);
+ Alien2 = loadImage("Alien1.jpg");
+ Alien2.resize(40,40);
+ tripleShotImg = loadImage("tripleShot.png");
+ rapidFireImg = loadImage("rapidFire.jpg");
+ largeBulletImg = loadImage("largeBullet.jpg");
+ tripleShotImg.resize(20, 20);
+ rapidFireImg.resize(20, 20);
+ largeBulletImg.resize(20, 20);
+ noStroke();
+ shields.add(new Shield(int(random(100,800)), 700, 80, 20));
+ shields.add(new Shield(int(random(100,800)), 700, 80, 20));
+ aliens = new Alien[10];
+ init_array(aliens);
+ player = new Player (width / 2 - 50, height - 50, 100, 20, 5);
+ powerUps = new ArrayList<PowerUp>();
+}
+void init_array(Alien theArray[]){
+  for (int i = 0; i<theArray.length; i++)
+  if (i%2==0)
+  {
+  theArray[i] = new Alien (50+(i*75),50,10,Alien1);
+  }
+  else 
+  {
+    theArray[i] = new SinusoidalAlien(50 + (i*75), i, 10, Alien2);
+  }
+  
+}
+void explode()
+{
+  Explode = loadImage("invader.GIF");
+  Explode.resize(40,40);
+}
+void mousePressed() {
+        if (player.fireMode == 1) { 
+            bullets.add(new Bullet(player.x + 20, player.y,10,10,10));
+            bullets.add(new Bullet(player.x + 40, player.y,10,10,10));
+            bullets.add(new Bullet(player.x + 60, player.y,10,10,10));
+        } 
+        else if (player.fireMode == 2)
+            bullets.add(new Bullet(player.x + 10, player.y,25, 5, 10));
+        else if (player.fireMode == 3) { 
+            bullets.add(new Bullet(player.x + 15, player.y,3,30,50));
+        } 
+        else { 
+            bullets.add(new Bullet(player.x + 20, player.y,5,5,10));
+        }
+
+}
+void draw()
+{
+   if (count >= 10)
+  {
+    background(0);
+    fill(0,255,0);
+    textSize(50);
+    textAlign(CENTER,CENTER);
+    text("You win!", width / 2, height / 2);
+  } 
+  else if (gameOver)
+  {
+    background(0);
+    fill (255,0,0);
+    textSize(50);
+    textAlign(CENTER, CENTER);
+    text("Game Over!", width / 2, height / 2);
+  }
+  else
+  { 
+    background(0);
+    // accesing each Shield
+  for (Shield shield : shields)
+  {
+    shield.display();
+  }
+    // accesing each bullet
+  for (Bullet bullet : bullets)
+  { 
+     for (Shield shield : shields)
+        { 
+          if (shield.isHit(bullet.x, bullet.y)&&bullet.hit==false)
+          {
+            shield.takeDamage(10);
+             bullet.hit = true;
+             break;
+          }
+        }
+  }
+  for (int i = shields.size() - 1; i>=0; i--)
+  {
+    if (shields.get(i).isDestroyed())
+    {
+      shields.remove(i);
+    }
+  }
+  player.move();
+  player.collectPowerUps(powerUps);
+  player.draw();
+
+  for (int i = 0; i<aliens.length; i++)
+  {
+  aliens[i].draw();
+  aliens[i].move();
+  if (aliens[i].bomb!=null&& aliens[i].bomb.active && aliens[i].bomb.collide(player))
+  {
+    fill(255, 0, 0);
+    textSize(32);
+    text("Game Over", width / 2, height / 2);
+  }
+  }
+  for (int i = 0; i < aliens.length; i++)
+      {
+         Alien alien = aliens[i];
+         if (alien.bomb != null && alien.bomb.active)
+         {
+            for (Shield shield : shields)
+            {
+               if (shield.isHit(alien.bomb.x, alien.bomb.y))
+               {
+                  shield.takeDamage(34);
+                  alien.bomb.deactivate(); 
+               }
+            }
+         }
+      }
+
+   speedMultiplier += 0.0005;
+   for (int i = bullets.size() - 1; i >= 0; i--) {
+    Bullet b = bullets.get(i);
+    b.move();
+    b.collide(aliens);
+    b.draw();
+
+    if (!b.active) {
+      bullets.remove(i); 
+    }
+  }
+ 
+   for (int i = powerUps.size() - 1; i >= 0; i--) {
+    powerUps.get(i).move();
+    powerUps.get(i).draw();
+    if (!powerUps.get(i).active) 
+      powerUps.remove(i);
+  }
+  }
+}
