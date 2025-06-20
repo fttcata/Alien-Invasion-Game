@@ -1,0 +1,42 @@
+class PowerUp
+{
+ float x, y, speed;
+ boolean active;
+ PImage img;
+ int type;  
+
+  PowerUp(float startX, float startY, int powerType, PImage powerImg) {
+    x = startX;
+    y = startY;
+    speed = 2;
+    type = powerType;
+    img = powerImg;
+    active = true;
+  }
+
+  void move() {
+    if (active) {
+      y += speed;
+      if (y > height) {
+        active = false; 
+      }
+    }
+  }
+
+  void draw() {
+    if (active) {
+      image(img, x, y, 20, 20);
+    }
+  }
+
+  boolean collected(Player player) {
+    if (active && x + 20 > player.x && x < player.x + player.width && y + 20 > player.y && y < player.y + player.height) {
+      active = false;
+      System.out.println("collected");
+      return true;
+    }
+    return false;
+  }
+}
+  
+  
