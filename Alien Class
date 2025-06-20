@@ -1,0 +1,74 @@
+class Alien
+{
+ float x,y;
+ float speed;
+ boolean exploded;
+ PImage currentImage;
+ PImage currentImage2;
+ Bomb bomb;
+ boolean active = true;
+ Alien(float startX, float startY, float spd,PImage Alien1)
+ {
+  x = startX;
+  y = startY;
+  speed = spd;
+  exploded = false;
+  currentImage = Alien1;
+  currentImage2 = Alien2;
+  bomb = null;
+ }
+
+ void draw()
+ {
+   {
+   image(currentImage,x,y);
+   if (bomb!=null) bomb.draw();
+   }
+ }
+ Bomb getBomb()
+ {
+   return bomb;
+ } 
+ void move()
+ {
+   {
+   x+=speed;
+   if (x>width-Alien1.width || x<0)
+   {
+     speed*=-1;
+     y += Alien1.height;
+   }
+   if (bomb != null) 
+   {bomb.move();
+     if (bomb.offScreen())
+     {
+       bomb = null;
+     }
+   }
+   else
+   if (random(1)<0.1&&active)
+   bomb = new Bomb ( x + 20, y + 40);
+   }
+ }
+
+void explode()
+{
+  if (!exploded)
+  { active = false;
+    currentImage = Explode;
+    exploded=true;
+    speed = 0;
+    count++;
+      if (random(0,1) < 0.3) {
+        int powerType = int(random(1, 4)); 
+        PImage powerImg;
+        if (powerType == 1) powerImg = tripleShotImg;
+        else if (powerType == 2) powerImg = rapidFireImg;
+        else powerImg = largeBulletImg;
+
+        powerUps.add(new PowerUp(x + 10, y + 10, powerType, powerImg));
+      }
+  }
+}
+
+}
