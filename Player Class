@@ -1,0 +1,65 @@
+class Player
+{
+  int fireMode; 
+  int fireRate;
+ float x, y, width, height, speed;
+ boolean left, right;
+ Player(float startX, float startY, float w, float h, float spd)
+ {
+   x = startX;
+   y = startY;
+   width = w;
+   height = h;
+   speed = spd;   
+   left = false;
+   right = false;
+   fireRate = 10;
+  }
+
+  void move() {
+    if (left) {
+      x -= speed;
+    }
+    if (right) {
+      x += speed;
+    }
+    x = constrain (x, 0, 900);
+  }
+   void collectPowerUps(ArrayList<PowerUp> powerUps) {
+    for (int i = powerUps.size() - 1; i >= 0; i--) {
+      if (powerUps.get(i).collected(this)) {
+        applyPowerUp(powerUps.get(i).type);
+        powerUps.remove(i);
+      }
+    }
+  }
+
+  void applyPowerUp(int type) {
+    if (type == 1) fireMode = 1; 
+    else if (type == 2) fireMode = 2;
+    else if (type == 3) fireMode = 3; 
+  }
+
+  void draw() {
+    fill(255, 255, 255); 
+    rect(x, y, width, height);
+  }
+}
+
+void keyPressed() {
+  if (key == 'a' || key == 'A') {
+    player.left = true;
+  }
+  if (key == 'd' || key == 'D') {
+    player.right = true;
+  }
+}
+
+void keyReleased() {
+  if (key == 'a' || key == 'A') {
+    player.left = false;
+  }
+  if (key == 'd' || key == 'D') {
+    player.right = false;
+  }
+}
