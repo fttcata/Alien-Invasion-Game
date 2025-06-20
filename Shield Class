@@ -1,0 +1,42 @@
+class Shield {
+  float x, y;    
+  float width, height; 
+  int health;   
+  color shieldColor;
+
+  Shield(float x, float y, float width, float height) {
+    this.x = x;
+    this.y = y;
+    this.width = width;
+    this.height = height;
+    this.health = 100;  
+    this.shieldColor = color(0, 255, 0);  
+  }
+
+ 
+  void display() {
+    fill(shieldColor, map(health, 0, 200, 200, 255)); 
+    rect(x, y, width, height);  
+  }
+
+ 
+  void takeDamage(int damage) {
+    health -= damage;           
+    if (health < 0) health = 0; 
+    updateColor();             
+  }
+
+
+  void updateColor() {
+    shieldColor = lerpColor(color(0, 255, 0), color(255, 0, 0), map(health, 100, 0, 0, 1));
+  }
+
+ 
+  boolean isHit(float bulletX, float bulletY) {
+    return bulletX >= x && bulletX <= x + width && bulletY >= y && bulletY <= y + height;
+  }
+ 
+  boolean isDestroyed() {
+    return health <= 0;
+  }
+}
