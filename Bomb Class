@@ -1,0 +1,44 @@
+class Bomb {
+  float x, y;
+  float speed = 5;
+  boolean active;
+  
+  Bomb(float startX, float startY) {
+    x = startX;
+    y = startY;
+    active = true;
+  }
+  boolean offScreen()
+  {
+    if (y>height)
+    return true;
+    else return false;
+  }
+  void move() {
+    if (active) {
+      y += speed;
+      if (y > height) {
+        active = false;
+      }
+    }
+  }
+  
+  void draw() {
+    if (active) {
+      fill(255, 0, 0);
+      ellipse(x, y, 10, 10);
+    }
+  }
+  void deactivate()
+  {
+   active = false;
+  }
+  boolean collide(Player player) {
+    if (active && x > player.x && x < player.x + player.width && y > player.y && y < player.y + player.height) {
+      active = false;
+      gameOver = true;
+      return true;
+    }
+    return false;
+  }
+}
