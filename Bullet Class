@@ -1,0 +1,52 @@
+class Bullet
+{
+  float x, y;
+  float speed;
+  boolean active;
+  int bulletwidth;
+  int bulletheight;
+  boolean hit = false;
+  Bullet(float startX, float startY, float bulletSpeed, int bulletWidth, int bulletHeight){
+    x = startX;
+    y = startY;
+    speed = bulletSpeed;  
+    active = true;  
+    bulletwidth = bulletWidth;
+    bulletheight = bulletHeight;
+  }
+
+  void move() {
+    if (active) {
+      y -= speed;  
+      if (y < 0) {  
+        active = false;  
+      }
+    } 
+  }
+
+  void draw() {
+    if (active) {
+      if (player.fireMode == 1)
+      fill(0, 255, 0);  
+      else if (player.fireMode == 2)
+      fill (255,255,0);
+      else if (player.fireMode == 3)
+      fill (0,0,255);
+      else
+      fill (255,255,255);
+      rect(x, y, bulletwidth, bulletheight);  
+    }
+  }
+  void collide(Alien[] aliens) {
+    if (!active) return; 
+
+    for (int i = 0; i < aliens.length; i++) {
+      Alien a = aliens[i];
+      if (!a.exploded && x > a.x && x < a.x + 40 && y > a.y && y < a.y + 40) { 
+        a.explode(); 
+      }
+    }
+  }
+  
+ 
+} 
